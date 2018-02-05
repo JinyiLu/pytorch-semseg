@@ -27,5 +27,10 @@
   "cityscapes":
   {
     "data_path": "/home/meet/datasets/cityscapes/"
+  },
+
+  "dsbowl":
+  {
+    "data_path": "/home/jinyi/Documents/Code/Kaggle-Practice/data/DSBowl/"
   }
 }

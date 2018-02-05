@@ -26,7 +26,7 @@ def train(args):
     # Setup Dataloader
     data_loader = get_loader(args.dataset)
     data_path = get_data_path(args.dataset)
-    t_loader = data_loader(data_path, is_transform=True, img_size=(args.img_rows, args.img_cols), augmentations=data_aug)
+    t_loader = data_loader(data_path, is_transform=True, split='dev', img_size=(args.img_rows, args.img_cols), augmentations=data_aug)
     v_loader = data_loader(data_path, is_transform=True, split='val', img_size=(args.img_rows, args.img_cols))
 
     n_classes = t_loader.n_classes
@@ -90,7 +90,7 @@ def train(args):
 
             loss.backward()
             optimizer.step()
-
+            
             if args.visdom:
                 vis.line(
                     X=torch.ones((1, 1)).cpu() * i,
@@ -98,7 +98,7 @@ def train(args):
                     win=loss_window,
                     update='append')
 
-            if (i+1) % 20 == 0:
+            if (i) % 20 == 0:
                 print("Epoch [%d/%d] Loss: %.4f" % (epoch+1, args.n_epoch, loss.data[0]))
 
         model.eval()
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hyperparams')
     parser.add_argument('--arch', nargs='?', type=str, default='fcn8s', 
                         help='Architecture to use [\'fcn8s, unet, segnet etc\']')
-    parser.add_argument('--dataset', nargs='?', type=str, default='pascal', 
+    parser.add_argument('--dataset', nargs='?', type=str, default='dsbowl', 
                         help='Dataset to use [\'pascal, camvid, ade20k etc\']')
     parser.add_argument('--img_rows', nargs='?', type=int, default=256, 
                         help='Height of the input image')

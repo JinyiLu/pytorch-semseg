@@ -4,15 +4,18 @@ Misc Utility functions
 
 import os
 import numpy as np
+import glob
 
 def recursive_glob(rootdir='.', suffix=''):
     """Performs recursive glob with given suffix and rootdir 
         :param rootdir is the root directory
         :param suffix is the suffix to be searched
     """
-    return [os.path.join(looproot, filename)
-        for looproot, _, filenames in os.walk(rootdir)
-        for filename in filenames if filename.endswith(suffix)]
+    return glob.glob(rootdir + '/*' + suffix)
+
+    # return [os.path.join(looproot, filename)
+    #     for looproot, _, filenames in os.walk(rootdir)
+    #     for filename in filenames if filename.endswith(suffix)]
 
 def poly_lr_scheduler(optimizer, init_lr, iter, lr_decay_iter=1, max_iter=30000, power=0.9,):
     """Polynomial decay of learning rate
@@ -54,10 +57,10 @@ def convert_state_dict(state_dict):
        :param state_dict is the loaded DataParallel model_state
     
     """
-    
+    new_state_dict = {}
     for k, v in state_dict.items():
         name = k[7:] # remove `module.`
-        state_dict[name] = v
-        del state_dict[k]
-    return state_dict
+        new_state_dict[name] = v
+        # del state_dict[k]
+    return new_state_dict
 

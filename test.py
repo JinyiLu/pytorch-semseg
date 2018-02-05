@@ -30,14 +30,14 @@ def test(args):
     
     data_loader = get_loader(args.dataset)
     data_path = get_data_path(args.dataset)
-    loader = data_loader(data_path, is_transform=True)
+    loader = data_loader(data_path, split='test', is_transform=True)
     n_classes = loader.n_classes
     
     resized_img = misc.imresize(img, (loader.img_size[0], loader.img_size[1]), interp='bicubic')
 
-    img = img[:, :, ::-1]
+    img = img[:, :, :3]
     img = img.astype(np.float64)
-    img -= loader.mean
+    # img -= loader.mean
     img = misc.imresize(img, (loader.img_size[0], loader.img_size[1]))
     img = img.astype(float) / 255.0
     # NHWC -> NCWH
@@ -48,13 +48,14 @@ def test(args):
     # Setup Model
     model = get_model(args.model_path[:args.model_path.find('_')], n_classes)
     state = convert_state_dict(torch.load(args.model_path)['model_state'])
+    # state = torch.load(args.model_path)['model_state']
     model.load_state_dict(state)
     model.eval()
     
     model.cuda(0)
     images = Variable(img.cuda(0), volatile=True)
 
-    outputs = F.softmax(model(images), dim=1)
+    outputs = F.softmax(model(images))
     
     if args.dcrf == "True":
         unary = outputs.data.cpu().numpy()
@@ -85,16 +86,16 @@ def test(args):
         images = Variable(img, volatile=True)
 
     pred = np.squeeze(outputs.data.max(1)[1].cpu().numpy(), axis=0)
-    decoded = loader.decode_segmap(pred)
-    print('Classes found: ', np.unique(pred))
-    misc.imsave(args.out_path, decoded)
+    # decoded = loader.decode_segmap(pred)
+    # print('Classes found: ', np.unique(pred))
+    misc.imsave(args.out_path, pred)
     print("Segmentation Mask Saved at: {}".format(args.out_path))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Params')
     parser.add_argument('--model_path', nargs='?', type=str, default='fcn8s_pascal_1_26.pkl', 
                         help='Path to the saved model')
-    parser.add_argument('--dataset', nargs='?', type=str, default='pascal', 
+    parser.add_argument('--dataset', nargs='?', type=str, default='dsbowl', 
                         help='Dataset to use [\'pascal, camvid, ade20k etc\']')
     parser.add_argument('--dcrf', nargs='?', type=str, default="False",
                         help='Enable DenseCRF based post-processing')
