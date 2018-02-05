@@ -31,6 +31,6 @@
 
   "dsbowl":
   {
-    "data_path": "/home/jinyi/Documents/Code/Kaggle-Practice/data/DSBowl/"
+    "data_path": "../Kaggle-Practice/data/DSBowl/"
   }
 }
