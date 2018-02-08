@@ -27,6 +27,8 @@ def test(args):
     # Setup image
     print("Read Input Image from : {}".format(args.img_path))
     img = misc.imread(args.img_path)
+
+    origin_size = img.shape
     
     data_loader = get_loader(args.dataset)
     data_path = get_data_path(args.dataset)
@@ -88,6 +90,7 @@ def test(args):
     pred = np.squeeze(outputs.data.max(1)[1].cpu().numpy(), axis=0)
     # decoded = loader.decode_segmap(pred)
     # print('Classes found: ', np.unique(pred))
+    pred = misc.imresize(pred, origin_size)
     misc.imsave(args.out_path, pred)
     print("Segmentation Mask Saved at: {}".format(args.out_path))
 
