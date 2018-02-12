@@ -4,7 +4,7 @@ from ptsemseg.models.utils import *
 
 class unet(nn.Module):
 
-    def __init__(self, feature_scale=4, n_classes=21, is_deconv=True, in_channels=3, is_batchnorm=True):
+    def __init__(self, feature_scale=4, n_classes=2, is_deconv=True, in_channels=3, is_batchnorm=True):
         super(unet, self).__init__()
         self.is_deconv = is_deconv
         self.in_channels = in_channels

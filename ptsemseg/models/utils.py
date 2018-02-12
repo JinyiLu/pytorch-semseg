@@ -77,16 +77,16 @@ class unetConv2(nn.Module):
         super(unetConv2, self).__init__()
 
         if is_batchnorm:
-            self.conv1 = nn.Sequential(nn.Conv2d(in_size, out_size, 3, 1, 0),
+            self.conv1 = nn.Sequential(nn.Conv2d(in_size, out_size, 3, 1, padding=1),
                                        nn.BatchNorm2d(out_size),
                                        nn.ReLU(),)
-            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, 0),
+            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, padding=1),
                                        nn.BatchNorm2d(out_size),
                                        nn.ReLU(),)
         else:
-            self.conv1 = nn.Sequential(nn.Conv2d(in_size, out_size, 3, 1, 0),
+            self.conv1 = nn.Sequential(nn.Conv2d(in_size, out_size, 3, 1, padding=1),
                                        nn.ReLU(),)
-            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, 0),
+            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, padding=1),
                                        nn.ReLU(),)
     def forward(self, inputs):
         outputs = self.conv1(inputs)
