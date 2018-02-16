@@ -7,7 +7,6 @@ from torch.utils import data
 
 from ptsemseg.utils import recursive_glob
 
-
 class DSBowlLoader(data.Dataset):
     """MITSceneParsingBenchmarkLoader
 
@@ -38,6 +37,7 @@ class DSBowlLoader(data.Dataset):
         self.img_size = img_size if isinstance(img_size, tuple) else (img_size, img_size)
         self.mean = np.array([104.00699, 116.66877, 122.67892])
         self.files = {}
+        self.augmentations = augmentations
 
         self.images_base = os.path.join(self.root, self.split, '*', 'images/')
         self.annotations_base = os.path.join(self.root, self.split, '*', 'masks/')
@@ -73,6 +73,9 @@ class DSBowlLoader(data.Dataset):
 
         lbl = np.array(lbls)
         lbl = lbl.any(0).astype(int)
+
+        if self.augmentations is not None:
+            img, lbl = self.augmentations(img, lbl)
 
         if self.is_transform:
             img, lbl = self.transform(img, lbl)
